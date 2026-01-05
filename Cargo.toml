@@ -5,7 +5,7 @@ edition = "2024"
 description = "EYWA Authentication Module - JWT, Password Hashing, TOTP for HomeManager"
 authors = ["HomeManager Team"]
 license = "MIT"
-repository = "https://github.com/homemanager/eywa-authentication"
+repository = "https://github.com/EywaOS/eywa-authentication"
 
 [lib]
 name = "eywa_authentication"
@@ -35,7 +35,7 @@ serde_json = "1.0"
 uuid = { version = "1.17", features = ["v4", "v7", "serde"] }
 
 # Error handling (from eywa-errors workspace)
-eywa-errors = { workspace = true }
+eywa-errors = { git = "https://github.com/EywaOS/eywa-errors" }
 thiserror = "1.0"
 
 # Validation
