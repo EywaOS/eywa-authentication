@@ -51,7 +51,7 @@ use thiserror::Error;
 use url::Url;
 use uuid::Uuid;
 
-use crate::{Result, error::AuthError};
+use crate::{error::AuthError, Result};
 use eywa_errors::AppError;
 
 // ==================== Email Validation ====================
@@ -91,7 +91,7 @@ lazy_static::lazy_static! {
 /// ```
 pub fn validate_email(email: &str) -> Result<()> {
     if email.is_empty() {
-        return Err(AppError::ValidationError {
+        return Err(AppError::ValidationField {
             field: "email".to_string(),
             message: "Email is required".to_string(),
         });
@@ -100,7 +100,7 @@ pub fn validate_email(email: &str) -> Result<()> {
     if EMAIL_REGEX.is_match(email) {
         Ok(())
     } else {
-        Err(AppError::ValidationError {
+        Err(AppError::ValidationField {
             field: "email".to_string(),
             message: format!("Invalid email format: {}", email),
         })
