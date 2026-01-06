@@ -47,11 +47,11 @@
 //! - Uses proper regex patterns for each input type
 
 use regex::Regex;
-use thiserror::Error;
+
 use url::Url;
 use uuid::Uuid;
 
-use crate::{error::AuthError, Result};
+use crate::{Result, error::AuthError};
 use eywa_errors::AppError;
 
 // ==================== Email Validation ====================

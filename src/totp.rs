@@ -212,7 +212,7 @@ impl TotpService {
     /// # Returns
     ///
     /// Base32-encoded TOTP secret
-    pub fn generate_secret_with_length(&self, length: usize) -> Result<String> {
+    pub fn generate_secret_with_length(&self, _length: usize) -> Result<String> {
         // totp-rs doesn't seem to expose arbitrary length generation in Secret?
         // But Secret::generate_secret() uses default.
         // We can create Secret from bytes if we generate bytes ourselves.

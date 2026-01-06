@@ -23,7 +23,6 @@
 //! ```
 
 use serde::{Deserialize, Serialize};
-use std::time::Duration;
 
 // ==================== JWT Configuration ====================
 
@@ -872,11 +871,11 @@ impl AuthConfig {
     #[must_use]
     pub fn generate_test_jwt_secret() -> String {
         use rand::Rng;
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         let secret: String = (0..64)
             .map(|_| {
                 let charset = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-                charset[rng.gen_range(0..charset.len())] as char
+                charset[rng.random_range(0..charset.len())] as char
             })
             .collect();
         secret

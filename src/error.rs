@@ -246,38 +246,38 @@ impl From<AuthError> for AppError {
             }
 
             // User already exists
-            AuthError::UserAlreadyExists => Self::ValidationField {
+            AuthError::UserAlreadyExists => AppError::ValidationField {
                 field: "email".to_string(), // could be username too
                 message: "User with this email or username already exists".to_string(),
             },
 
             // Validation errors
-            AuthError::PasswordTooWeak(msg) => Self::ValidationField {
+            AuthError::PasswordTooWeak(msg) => AppError::ValidationField {
                 field: "password".to_string(),
                 message: msg,
             },
 
-            AuthError::InvalidUsername(msg) => Self::ValidationField {
+            AuthError::InvalidUsername(msg) => AppError::ValidationField {
                 field: "username".to_string(),
                 message: msg,
             },
 
-            AuthError::InvalidUuid(msg) => Self::ValidationField {
+            AuthError::InvalidUuid(msg) => AppError::ValidationField {
                 field: "uuid".to_string(),
                 message: format!("Invalid UUID: {}", msg),
             },
 
-            AuthError::InvalidPhone(msg) => Self::ValidationField {
+            AuthError::InvalidPhone(msg) => AppError::ValidationField {
                 field: "phone".to_string(),
                 message: format!("Invalid phone: {}", msg),
             },
 
-            AuthError::InvalidUrl(msg) => Self::ValidationField {
+            AuthError::InvalidUrl(msg) => AppError::ValidationField {
                 field: "url".to_string(),
                 message: msg,
             },
 
-            AuthError::DangerousContent { content } => Self::ValidationField {
+            AuthError::DangerousContent { content } => AppError::ValidationField {
                 field: "input".to_string(),
                 message: format!("Dangerous content detected: {}", content),
             },
@@ -285,7 +285,7 @@ impl From<AuthError> for AppError {
             AuthError::InputTooShort {
                 min_length,
                 actual_length,
-            } => Self::ValidationField {
+            } => AppError::ValidationField {
                 field: "input".to_string(),
                 message: format!(
                     "Input too short: minimum {} characters, got {}",
@@ -296,7 +296,7 @@ impl From<AuthError> for AppError {
             AuthError::InputTooLong {
                 max_length,
                 actual_length,
-            } => Self::ValidationField {
+            } => AppError::ValidationField {
                 field: "input".to_string(),
                 message: format!(
                     "Input too long: maximum {} characters, got {}",
@@ -304,12 +304,12 @@ impl From<AuthError> for AppError {
                 ),
             },
 
-            AuthError::MissingField { field } => Self::ValidationField {
+            AuthError::MissingField { field } => AppError::ValidationField {
                 field: field.clone(),
                 message: format!("Missing required field: {}", field),
             },
 
-            AuthError::InvalidFieldValue { field, reason } => Self::ValidationField {
+            AuthError::InvalidFieldValue { field, reason } => AppError::ValidationField {
                 field,
                 message: reason,
             },

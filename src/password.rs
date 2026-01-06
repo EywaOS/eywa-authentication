@@ -36,12 +36,12 @@
 //! - Resistant to GPU/ASIC attacks
 //! - Detects weak passwords
 
+use crate::config::HashingAlgorithm;
+use crate::{Result, error::AuthError};
 use argon2::{
     Algorithm, Argon2, Params, Version,
     password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
 };
-use crate::config::{HashingAlgorithm, PasswordConfig};
-use crate::{Result, error::AuthError};
 
 // ==================== Password Policy ====================
 
@@ -168,53 +168,61 @@ impl PasswordPolicy {
     pub fn validate(&self, password: &str) -> Result<()> {
         // Check length
         if password.len() < self.min_length {
-            return Err(AuthError::PasswordTooWeak(
-                format!("Password is too short (minimum {} characters)", self.min_length)
-            ).into());
+            return Err(AuthError::PasswordTooWeak(format!(
+                "Password is too short (minimum {} characters)",
+                self.min_length
+            ))
+            .into());
         }
 
         if password.len() > self.max_length {
-            return Err(AuthError::PasswordTooWeak(
-                format!("Password is too long (maximum {} characters)", self.max_length)
-            ).into());
+            return Err(AuthError::PasswordTooWeak(format!(
+                "Password is too long (maximum {} characters)",
+                self.max_length
+            ))
+            .into());
         }
 
         // Check for uppercase
         if self.require_uppercase && !password.chars().any(|c| c.is_uppercase()) {
             return Err(AuthError::PasswordTooWeak(
                 "Password must contain at least one uppercase letter".to_string(),
-            ).into());
+            )
+            .into());
         }
 
         // Check for lowercase
         if self.require_lowercase && !password.chars().any(|c| c.is_lowercase()) {
             return Err(AuthError::PasswordTooWeak(
                 "Password must contain at least one lowercase letter".to_string(),
-            ).into());
+            )
+            .into());
         }
 
         // Check for numbers
         if self.require_numbers && !password.chars().any(|c| c.is_numeric()) {
             return Err(AuthError::PasswordTooWeak(
                 "Password must contain at least one number".to_string(),
-            ).into());
+            )
+            .into());
         }
 
         // Check for special characters
-        if self.require_special_chars
-            && !password.chars().any(|c| !c.is_alphanumeric())
-        {
+        if self.require_special_chars && !password.chars().any(|c| !c.is_alphanumeric()) {
             return Err(AuthError::PasswordTooWeak(
                 "Password must contain at least one special character".to_string(),
-            ).into());
+            )
+            .into());
         }
 
         // Check strength score
         let strength = PasswordService::calculate_strength(password);
         if strength < self.min_strength_score {
-            return Err(AuthError::PasswordTooWeak(
-                format!("Password strength score {} is below minimum {}", strength, self.min_strength_score)
-            ).into());
+            return Err(AuthError::PasswordTooWeak(format!(
+                "Password strength score {} is below minimum {}",
+                strength, self.min_strength_score
+            ))
+            .into());
         }
 
         Ok(())
@@ -310,9 +318,8 @@ impl PasswordService {
     /// assert!(is_valid);
     /// ```
     pub fn verify_password(&self, password: &str, hash: &str) -> Result<bool> {
-        let parsed_hash = PasswordHash::new(hash).map_err(|e| {
-            AuthError::PasswordVerificationError(e.to_string())
-        })?; // Implicit conversion via ? works if Result types match, otherwise manually convert
+        let parsed_hash = PasswordHash::new(hash)
+            .map_err(|e| AuthError::PasswordVerificationError(e.to_string()))?; // Implicit conversion via ? works if Result types match, otherwise manually convert
 
         // Here we map Error so we need to be careful.
         // Wait, Result<bool> is Result<bool, AppError>.
